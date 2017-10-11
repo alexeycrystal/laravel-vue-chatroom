@@ -41,5 +41,11 @@ const app = new Vue({
             this.messages.push(message)
             console.log('Message added!');
         }
+    },
+    created(){
+        axios.get('/messages').then(response => {
+            console.log(response.data);
+            this.messages = response.data;
+        });
     }
 });
