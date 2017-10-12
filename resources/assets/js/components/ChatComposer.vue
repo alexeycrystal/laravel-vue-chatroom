@@ -16,7 +16,7 @@
                 this.$emit('messagesent', {
                     message: this.messageText,
                     user: {
-                        name: $('.navbar-right .dropdown-toggle').text();
+                        name: $('.navbar-right .dropdown-toggle').text()
                     }
                 });
                 this.messageText = '';

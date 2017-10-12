@@ -23,29 +23,39 @@ Vue.component('chat-composer', require('./components/ChatComposer.vue'));
 const app = new Vue({
     el: '#app',
     data: {
-        messages: [
-            {
-                message: 'Hey!',
-                user: 'Alex Shabramov'
-            },
-            {
-                message: 'Hey man! Whats up?',
-                user: 'Oleh Ochrimenko'
-            }
-        ]
+        messages: [],
+        usersInRoom: []
     },
     methods: {
         addMessage(message){
-            //Add to existing messages
-            //Persist to the database e.t.c.
-            this.messages.push(message)
-            console.log('Message added!');
+            this.messages.push(message);
+            axios.post('/messages', message)
+                .then((response) => {
+
+            });
         }
     },
     created(){
-        axios.get('/messages').then(response => {
-            console.log(response.data);
+        axios.get('/messages')
+            .then((response) => {
             this.messages = response.data;
         });
+        Echo.join('chatroom')
+            .here((users) => {
+                this.usersInRoom = users;
+            })
+            .joining((user) => {
+                this.usersInRoom.push(user);
+            })
+            .leaving((user) => {
+                this.usersInRoom = this.usersInRoom.filter(u => u != user);
+            })
+            .listen('MessagePosted',(e) => {
+                console.log("TEST");
+                this.messages.push({
+                    message: e.message.message,
+                    user: e.user
+                });
+            });
     }
 });
