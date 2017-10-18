@@ -6,10 +6,11 @@ use App\User;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
+use Tests\InitialiseDatabaseTrait;
 
 class ChatTest extends DuskTestCase
 {
-    use DatabaseMigrations;
+    use DatabaseMigrations, InitialiseDatabaseTrait;
 
     /**
      * A basic browser test example.
@@ -34,5 +35,11 @@ class ChatTest extends DuskTestCase
             $first->waitForText('Hey Test U1')
                 ->assertSee(User::find(2)->name);
         });
+    }
+
+    public function setUpTraits()
+    {
+        $this->backupDatabase();
+        parent::setUpTraits();
     }
 }
