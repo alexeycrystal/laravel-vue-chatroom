@@ -19,19 +19,37 @@ class ChatTest extends DuskTestCase
      */
     public function testChat()
     {
+        $appUrl = env("APP_URL", "http://localhost");
         $this->browse(function ($first, $second) {
-            $first->loginAs(User::find(1))
-                ->visit('http://localhost:8000/chat')
-                ->waitFor('.chat-composer');
+            $user1 = factory(User::class)->create([
+                'name' => 'John Johnson',
+                'email' => 'john@gmail.com',
+                'password' => bcrypt('password1')
+            ]);
+            $user2 = factory(User::class)->create([
+                'name' => 'Timmy Morgan',
+                'email' => 'timmy@yahoo.com',
+                'password' => bcrypt('password2')
+            ]);
+            $first->loginAs($user1)
+                ->visit($appUrl . '/chat')
+                ->waitFor('.chat-composer')
+                ->type('#message', 'Hey!')
+                ->press('Send');
 
-            $second->loginAs(User::find(2))
-                ->visit('http://localhost:8000/chat')
+            $second->loginAs($user2)
+                ->visit($appUrl . '/chat')
                 ->waitFor('.chat-composer')
                 ->type('#message', 'Hey Test U1')
                 ->press('Send');
 
+            $second->assertSee('Active users: 2');
+
+            $second->waitForText('Hey!')
+                ->assertSee($user1->name);
+
             $first->waitForText('Hey Test U1')
-                ->assertSee(User::find(2)->name);
+                ->assertSee($user2->name);
         });
     }
 
