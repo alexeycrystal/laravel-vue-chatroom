@@ -12,11 +12,11 @@ trait InitialiseDatabaseTrait
             $this->refreshApplication();
         }
         $db = $this->app->make('db')->connection();
-        if (file_exists($db->getDatabaseName())) {
-            unlink($db->getDatabaseName());
+        $dbName = $db->getDatabaseName();
+        if (file_exists($dbName)) {
+            unlink($dbName);
         }
-        touch($db->getDatabaseName());
+        touch($dbName);
         $this->artisan('migrate',['--env' => 'dusk.local']);
-        $this->seed(DatabaseSeeder::class);
     }
 }

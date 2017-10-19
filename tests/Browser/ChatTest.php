@@ -19,8 +19,8 @@ class ChatTest extends DuskTestCase
      */
     public function testChat()
     {
-        $appUrl = env("APP_URL", "http://localhost");
         $this->browse(function ($first, $second) {
+            $appUrl = env("APP_URL","http://localhost:8000");
             $user1 = factory(User::class)->create([
                 'name' => 'John Johnson',
                 'email' => 'john@gmail.com',
