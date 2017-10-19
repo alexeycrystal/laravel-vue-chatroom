@@ -6,42 +6,17 @@ use DatabaseSeeder;
 
 trait InitialiseDatabaseTrait
 {
-    protected static $backupExtension = '.dusk.bak';
-
-    /**
-     * Creates an empty database for testing, but backups the current dev one first.
-     */
     public function backupDatabase()
     {
         if (!$this->app) {
             $this->refreshApplication();
         }
-
         $db = $this->app->make('db')->connection();
-        if (!file_exists($db->getDatabaseName())) {
-            touch($db->getDatabaseName());
+        if (file_exists($db->getDatabaseName())) {
+            unlink($db->getDatabaseName());
         }
-
-        copy($db->getDatabaseName(), $db->getDatabaseName() . static::$backupExtension);
-        unlink($db->getDatabaseName());
         touch($db->getDatabaseName());
-
-        $this->artisan('migrate');
+        $this->artisan('migrate',['--env' => 'dusk.local']);
         $this->seed(DatabaseSeeder::class);
-        $this->beforeApplicationDestroyed([$this, 'restoreDatabase']);
-    }
-
-    /**
-     * Paired with backupDatabase to restore the dev database to its original form.
-     */
-    public function restoreDatabase()
-    {
-        if (!$this->app) {
-            $this->refreshApplication();
-        }
-        $db = $this->app->make('db')->connection();
-        copy($db->getDatabaseName() . static::$backupExtension,
-            $db->getDatabaseName());
-        unlink($db->getDatabaseName() . static::$backupExtension);
     }
 }

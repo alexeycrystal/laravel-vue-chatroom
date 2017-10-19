@@ -19,8 +19,6 @@ class ChatTest extends DuskTestCase
      */
     public function testChat()
     {
-        //$this->seed('TestsSeeder');
-
         $this->browse(function ($first, $second) {
             $first->loginAs(User::find(1))
                 ->visit('http://localhost:8000/chat')
