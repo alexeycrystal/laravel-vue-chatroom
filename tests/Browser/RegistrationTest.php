@@ -18,7 +18,7 @@ class RegistrationTest extends DuskTestCase
      *
      * @return void
      */
-    public function testLogin()
+    public function testRegistration()
     {
         $this->browse(function ($first) {
             $appUrl = env("APP_URL", "http://localhost:8000");
