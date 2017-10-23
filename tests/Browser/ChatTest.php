@@ -5,12 +5,11 @@ namespace Tests\Browser;
 use App\User;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Tests\InitialiseDatabaseTrait;
 
 class ChatTest extends DuskTestCase
 {
-    use DatabaseMigrations, InitialiseDatabaseTrait;
+    use InitialiseDatabaseTrait;
 
     /**
      * A basic browser test example.
