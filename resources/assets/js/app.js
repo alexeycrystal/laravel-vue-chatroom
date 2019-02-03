@@ -1,61 +1,22 @@
+window.$ = window.jQuery = require('jquery');
+require('bootstrap-sass');
 
-/**
- * First we will load all of this project's JavaScript dependencies which
- * includes Vue and other libraries. It is a great starting point when
- * building robust, powerful web applications using Vue and Laravel.
- */
+import Vue from 'vue';
+import App from './App';
 
-require('./bootstrap');
+import router from './router';
+import store from './store';
 
-window.Vue = require('vue');
+import broadcast from './broadcast'
 
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
+import ApiService from './api/api.service';
 
-Vue.component('example', require('./components/Example.vue'));
-Vue.component('chat-message', require('./components/ChatMessage.vue'));
-Vue.component('chat-log', require('./components/ChatLog.vue'));
-Vue.component('chat-composer', require('./components/ChatComposer.vue'));
+broadcast.initEcho();
+
+ApiService.init();
 
 const app = new Vue({
-    el: '#app',
-    data: {
-        messages: [],
-        usersInRoom: []
-    },
-    methods: {
-        addMessage(message){
-            this.messages.push(message);
-            axios.post('/messages', message)
-                .then((response) => {
-
-            });
-        }
-    },
-    created(){
-        axios.get('/messages')
-            .then((response) => {
-            this.messages = response.data;
-        });
-        Echo.join('chatroom')
-            .here((users) => {
-                this.usersInRoom = users;
-            })
-            .joining((user) => {
-                this.usersInRoom.push(user);
-            })
-            .leaving((user) => {
-                this.usersInRoom = this.usersInRoom.filter(u => u != user);
-            })
-            .listen('MessagePosted',(e) => {
-                console.log("TEST");
-                this.messages.push({
-                    message: e.message.message,
-                    user: e.user
-                });
-            });
-    }
-});
+    router,
+    store,
+    render: h => h(App)
+}).$mount('#globalChat');
