@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div class="chat-message">
         <p>{{message.message}}</p>
         <small>{{message.user.name}}</small>
